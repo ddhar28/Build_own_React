@@ -1,7 +1,16 @@
 (() => {
   function element (el, children) {
+    if (typeof el === 'function') {
+      return el()
+    }
     const ele = document.createElement(el)
-    ele.innerHTML = children.join(' ')
+    children.forEach(child => {
+      if (typeof child === 'object') {
+        ele.appendChild(child)
+      } else {
+        ele.innerHTML += child
+      }
+    })
     return ele
   }
 
