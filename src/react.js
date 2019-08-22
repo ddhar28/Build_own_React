@@ -1,13 +1,21 @@
 (() => {
-  function element (el, children) {
-    if (isClass(el)) {
-      let component = new el()
-      return component.render()
+  function renderElement (element, props, children) {
+    if (isClass(element)) {
+      return handleClass(element, props)
     }
-    if (typeof el === 'function') {
-      return el()
+    if (isStatelessComponent(element)) {
+      return element(props)
     }
-    const ele = document.createElement(el)
+    return handleHTML(element, children)
+  }
+
+  function handleClass (ClassElement, props) {
+    let component = new ClassElement(props)
+    return component.render()
+  }
+
+  function handleHTML (element, children) {
+    const ele = document.createElement(element)
     children.forEach(child => {
       if (typeof child === 'object') {
         ele.appendChild(child)
@@ -18,22 +26,24 @@
     return ele
   }
 
-  function isClass (func) {
-    return typeof func === 'function' &&
-    /^class\s/.test(Function.prototype.toString.call(func))
+  function createElement (element, props, ...children) {
+    return renderElement(element, props, children)
   }
 
-  function createElement (el, props, ...children) {
-    return element(el, children)
+  class Component {
+    constructor (props) {
+      this.props = props
+    }
   }
 
   window.React = {
-    createElement
+    createElement,
+    Component
   }
 
   window.ReactDOM = {
-    render: (el, domEl) => {
-      domEl.appendChild(el)
+    render: (element, domEl) => {
+      domEl.appendChild(element)
     }
   }
 })()
