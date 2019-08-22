@@ -1,5 +1,9 @@
 (() => {
   function element (el, children) {
+    if (isClass(el)) {
+      let component = new el()
+      return component.render()
+    }
     if (typeof el === 'function') {
       return el()
     }
@@ -12,6 +16,11 @@
       }
     })
     return ele
+  }
+
+  function isClass (func) {
+    return typeof func === 'function' &&
+    /^class\s/.test(Function.prototype.toString.call(func))
   }
 
   function createElement (el, props, ...children) {
