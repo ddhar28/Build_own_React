@@ -6,3 +6,7 @@ function isClass (func) {
 function isStatelessComponent (func) {
   return !isClass(func) && typeof func === 'function'
 }
+
+function isEventListener (propName) {
+  return /^on.*$/.test(propName)
+}
